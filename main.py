@@ -16,7 +16,7 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 
 @bot.event
 async def on_ready():
-    print(f"Logged in as {bot.user.name}!")
+    print(f"Logged in as {bot.user.name}! LETS GOOO!")
 
 @bot.event
 async def on_message(message):
