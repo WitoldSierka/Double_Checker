@@ -12,15 +12,37 @@ intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
 
+#images gallery
+last_images = []
+
 bot = commands.Bot(command_prefix='!', intents=intents)
 
 @bot.event
 async def on_ready():
-    print(f"Logged in as {bot.user.name}! LETS GOOO!")
+    print(f"Logged in as {bot.user.name}")
+    #load 20? last images
+
+
 
 @bot.event
 async def on_message(message):
+    if message.author == bot.user:
+        return
     for att in message.attachments:
-        print(att.filename)
+        print(att.size)
+        print(att.width)
+        print(att.height)
+        await message.channel.send(f"{message.author.mention}, you sent {att.filename} of type {att.content_type}.")
+    await bot.process_commands(message)
+
+def is_repeated(message):
+    pass
+    #get image to ?local object?
+
+    #compare with images in memory
+        #if match, remove message and send note to author
+
+
+
 
 bot.run(token, log_handler=handler, log_level=logging.DEBUG)
