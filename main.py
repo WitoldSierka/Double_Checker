@@ -15,6 +15,8 @@ intents.members = True
 #images gallery
 last_images = []
 
+delete_message = True
+
 TYPES_OF_INTEREST = ["image", "video"]
 #audio?
 
@@ -48,12 +50,13 @@ async def on_message(message):
         if not current_type in TYPES_OF_INTEREST:
             continue
         if await is_repeated(att):
-            #print("This image has already been posted before")
-            await message.channel.send(f"{message.author.mention}, you sent {att.filename} of type {att.content_type}"
-                                       ", which was already posted in this channel.")
+            if delete_message:
+                await message.delete()
+                await message.channel.send(f"{message.author.mention}, you sent a meme which was already posted in this channel.")
+            else:
+                await message.reply(f"{message.author.mention}, you sent a meme which was already posted in this channel.")
             break
 
-    #this line apparently stops the bot from tripping over itself
     await bot.process_commands(message)
 
 async def is_repeated(att):
@@ -78,6 +81,23 @@ async def is_repeated(att):
 
     return False
 
+@bot.command()
+async def del_msg_on(ctx):
+    global delete_message
+    delete_message = True
+    await ctx.send("The bot will now remove messages with reposts.")
 
+@bot.command()
+async def del_msg_off(ctx):
+    global delete_message
+    delete_message = False
+    await ctx.send("The bot will now only send a warning when a meme has been reposted.")
+
+@bot.command()
+async def manual(ctx):
+    await ctx.send("This bot removes messages with reposted images or videos.\n"
+                   "Warning-only mode can be toggled with the commands below:\n"
+                   "!del_msg_on - deletes message\n"
+                   "!del_msg_off - replies with a warning")
 
 bot.run(token, log_handler=handler, log_level=logging.DEBUG)
